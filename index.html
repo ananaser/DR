@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Список подарков Леры на 35-летие">
+  <title>Лере 35 — список подарков</title>
+
+  <style>
+    :root {
+      --bg: #f8f5f1;
+      --card: rgba(255, 255, 255, 0.92);
+      --text: #252321;
+      --muted: #706b66;
+      --accent: #bd755e;
+      --accent-dark: #945441;
+      --success: #287a55;
+      --success-bg: #eaf7ef;
+      --border: #e9e2dc;
+      --shadow: 0 18px 50px rgba(63, 45, 35, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #ffe9df 0, transparent 33%),
+        radial-gradient(circle at top right, #ece8ff 0, transparent 32%),
+        var(--bg);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .hero {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 72px 22px 38px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(42px, 8vw, 82px);
+      line-height: 0.98;
+      font-weight: 500;
+    }
+
+    .intro {
+      max-width: 680px;
+      margin: 24px auto 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .notice {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      margin-top: 24px;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      color: #5f5954;
+      font-size: 14px;
+    }
+
+    .grid {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto 70px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .gift-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .gift-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      background: #eee;
+    }
+
+    .gift-content {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    .gift-number {
+      margin-bottom: 10px;
+      color: var(--accent-dark);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .gift-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 29px;
+      font-weight: 500;
+      line-height: 1.16;
+    }
+
+    .gift-description {
+      margin: 14px 0 20px;
+      color: var(--muted);
+      line-height: 1.58;
+    }
+
+    .gift-meta {
+      margin-top: auto;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f6f2ee;
+      color: #5f5954;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .shop-link {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 48px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: var(--text);
+      color: white;
+      text-decoration: none;
+      font-weight: 750;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .shop-link:hover {
+      transform: translateY(-2px);
+      background: #000;
+    }
+
+    .reservation {
+      margin-top: 16px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .reservation-label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .reservation-row {
+      display: flex;
+      gap: 9px;
+    }
+
+    .reservation-input {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 13px;
+      border: 1px solid #dcd3cc;
+      border-radius: 12px;
+      outline: none;
+      background: white;
+    }
+
+    .reservation-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(189, 117, 94, .14);
+    }
+
+    .reserve-button,
+    .cancel-button {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .reserve-button {
+      background: var(--accent);
+      color: white;
+    }
+
+    .reserve-button:hover {
+      background: var(--accent-dark);
+    }
+
+    .cancel-button {
+      margin-top: 10px;
+      background: transparent;
+      color: #69625d;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .status {
+      margin-top: 12px;
+      min-height: 24px;
+      font-size: 14px;
+    }
+
+    .status.chosen {
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: var(--success);
+      font-weight: 750;
+    }
+
+    .status.error {
+      color: #aa2f2f;
+    }
+
+    .reserved-overlay {
+      position: relative;
+      border: 2px solid var(--success);
+      background: rgba(234, 247, 239, 0.96);
+      box-shadow: 0 18px 50px rgba(40, 122, 85, 0.16);
+    }
+
+    .reserved-overlay::before {
+      content: "КУПЛЕНО";
+      position: absolute;
+      z-index: 3;
+      top: 18px;
+      right: 18px;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: var(--success);
+      color: white;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      box-shadow: 0 8px 20px rgba(40, 122, 85, .24);
+    }
+
+    .reserved-overlay .gift-image {
+      filter: saturate(.55) brightness(.92);
+    }
+
+    .reserved-overlay .shop-link {
+      pointer-events: none;
+      background: #74706d;
+    }
+
+    footer {
+      padding: 0 20px 50px;
+      text-align: center;
+      color: #847d77;
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      .hero {
+        padding-top: 48px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .reservation-row {
+        flex-direction: column;
+      }
+
+      .reserve-button {
+        min-height: 46px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero">
+    <p class="eyebrow">Birthday wishlist</p>
+    <h1>Лере 35</h1>
+    <p class="intro">
+      Здесь собраны подарки, которые порадуют Леру.
+      Нажмите на ссылку, чтобы посмотреть подарок. Если вы решили его купить,
+      обязательно отметьте подарок как купленный — так другие гости не выберут его повторно.
+    </p>
+    <div class="notice">Важно: после покупки обязательно нажмите «Я купил(а) этот подарок»</div>
+  </header>
+
+  <main class="grid" id="giftGrid"></main>
+
+  <footer>
+    Сделано с любовью к 35-летию Леры
+  </footer>
+
+  <script type="module">
+    /*
+      ВАЖНО:
+      1. Создайте проект Firebase.
+      2. Подключите Firestore Database.
+      3. Вставьте настройки проекта вместо значений YOUR_...
+      После этого отметки гостей будут сохраняться и отображаться у всех.
+    */
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.firebasestorage.app",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const gifts = [
+      {
+        id: "yacht-dinner",
+        image: "yacht.svg",
+        title: "Круиз на яхте и ужин для двоих",
+        description:
+          "Красивый вечер на воде: прогулка на яхте и ужин из двух блюд для двоих.",
+        meta: "RedBalloon · впечатление для двоих",
+        url: "https://www.redballoon.com.au/product/yacht-cruise-and-2-course-dinner-experience---for-2/VYC033-M.html?listName=sub%20category%20%7C%20Experiences%20for%202"
+      },
+      {
+        id: "healing-lounge",
+        image: "spa.svg",
+        title: "Подарочная карта The Healing Lounge",
+        description:
+          "Подарочная карта на массаж, спа-процедуры и другие услуги The Healing Lounge.",
+        meta: "Стоимость от A$100 · срок действия 6 месяцев",
+        url: "https://www.thehealinglounge.com.au/membership-1"
+      },
+      {
+        id: "airbnb-card",
+        image: "airbnb.svg",
+        title: "Подарочная карта Airbnb",
+        description:
+          "Цифровая подарочная карта для будущего путешествия, проживания или впечатления.",
+        meta: "Сумму можно выбрать · цифровая доставка",
+        url: "https://www.airbnb.com.au/giftcards"
+      },
+      {
+        id: "ray-ban",
+        image: "sunglasses.svg",
+        title: "Солнцезащитные очки Ray-Ban RB4472",
+        description:
+          "Модель Ray-Ban Khal Bio-Based в черепаховой оправе с зелёными линзами.",
+        meta: "Sunglass Hut · размер 51–20",
+        url: "https://www.sunglasshut.com/au/ray-ban/rb4472-8056262833919"
+      }
+    ];
+
+    const grid = document.getElementById("giftGrid");
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderCards() {
+      grid.innerHTML = gifts.map((gift, index) => `
+        <article class="gift-card" data-gift-id="${gift.id}">
+          <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.title)}">
+
+          <div class="gift-content">
+            <div class="gift-number">Подарок ${String(index + 1).padStart(2, "0")}</div>
+            <h2 class="gift-title">${escapeHtml(gift.title)}</h2>
+            <p class="gift-description">${escapeHtml(gift.description)}</p>
+            <div class="gift-meta">${escapeHtml(gift.meta)}</div>
+
+            <a class="shop-link" href="${gift.url}" target="_blank" rel="noopener noreferrer">
+              Посмотреть подарок ↗
+            </a>
+
+            <div class="reservation">
+              <div class="reservation-label">
+                Уже купили или точно решили купить этот подарок?
+              </div>
+
+              <button class="reserve-button" type="button">
+                Я купил(а) этот подарок
+              </button>
+
+              <div class="status" aria-live="polite"></div>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    renderCards();
+
+    const firebaseIsConfigured =
+      !firebaseConfig.apiKey.startsWith("YOUR_") &&
+      !firebaseConfig.projectId.startsWith("YOUR_");
+
+    let db = null;
+    let firestoreApi = null;
+
+    if (firebaseIsConfigured) {
+      try {
+        const appModule = await import(
+          "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"
+        );
+        const firestoreModule = await import(
+          "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+        );
+
+        const app = appModule.initializeApp(firebaseConfig);
+        db = firestoreModule.getFirestore(app);
+        firestoreApi = firestoreModule;
+
+        startRealtimeUpdates();
+      } catch (error) {
+        console.error(error);
+        showGlobalSetupWarning(
+          "Не удалось подключиться к базе данных. Проверьте настройки Firebase."
+        );
+      }
+    } else {
+      showGlobalSetupWarning(
+        "Демо-режим: Firebase ещё не настроен. Сейчас отметки сохраняются только в этом браузере."
+      );
+      loadLocalReservations();
+    }
+
+    document.querySelectorAll(".gift-card").forEach((card) => {
+      const giftId = card.dataset.giftId;
+      const button = card.querySelector(".reserve-button");
+
+      button.addEventListener("click", async () => {
+        const confirmed = window.confirm(
+          "Подтвердите: вы уже купили или точно решили купить этот подарок. После подтверждения он будет отмечен как купленный для остальных гостей."
+        );
+
+        if (!confirmed) return;
+
+        button.disabled = true;
+        button.textContent = "Сохраняю…";
+
+        try {
+          if (firebaseIsConfigured && db && firestoreApi) {
+            await reserveGiftInFirebase(giftId);
+          } else {
+            reserveGiftLocally(giftId);
+          }
+        } catch (error) {
+          console.error(error);
+          setStatus(
+            card,
+            "Не получилось сохранить. Возможно, подарок уже отметил другой гость.",
+            "error"
+          );
+        } finally {
+          button.disabled = false;
+          button.textContent = "Я купил(а) этот подарок";
+        }
+      });
+    });
+
+    async function reserveGiftInFirebase(giftId) {
+      const {
+        doc,
+        runTransaction,
+        serverTimestamp
+      } = firestoreApi;
+
+      const giftRef = doc(db, "giftReservations", giftId);
+
+      await runTransaction(db, async (transaction) => {
+        const snapshot = await transaction.get(giftRef);
+
+        if (snapshot.exists() && snapshot.data().reserved === true) {
+          throw new Error("Gift is already reserved");
+        }
+
+        transaction.set(giftRef, {
+          reserved: true,
+          reservedAt: serverTimestamp()
+        });
+      });
+    }
+
+    function startRealtimeUpdates() {
+      const { collection, onSnapshot } = firestoreApi;
+
+      onSnapshot(
+        collection(db, "giftReservations"),
+        (snapshot) => {
+          const reservations = {};
+
+          snapshot.forEach((document) => {
+            reservations[document.id] = document.data();
+          });
+
+          gifts.forEach((gift) => {
+            updateCard(gift.id, reservations[gift.id] || null);
+          });
+        },
+        (error) => {
+          console.error(error);
+          showGlobalSetupWarning(
+            "Нет доступа к базе. Проверьте Firestore Rules."
+          );
+        }
+      );
+    }
+
+    function reserveGiftLocally(giftId) {
+      const reservations = JSON.parse(
+        localStorage.getItem("lera35Reservations") || "{}"
+      );
+
+      if (reservations[giftId]?.reserved) {
+        throw new Error("Gift is already reserved");
+      }
+
+      reservations[giftId] = {
+        reserved: true
+      };
+
+      localStorage.setItem(
+        "lera35Reservations",
+        JSON.stringify(reservations)
+      );
+
+      updateCard(giftId, reservations[giftId]);
+    }
+
+    function loadLocalReservations() {
+      const reservations = JSON.parse(
+        localStorage.getItem("lera35Reservations") || "{}"
+      );
+
+      gifts.forEach((gift) => {
+        updateCard(gift.id, reservations[gift.id] || null);
+      });
+    }
+
+    function updateCard(giftId, reservation) {
+      const card = document.querySelector(`[data-gift-id="${giftId}"]`);
+      if (!card) return;
+
+      const button = card.querySelector(".reserve-button");
+      const status = card.querySelector(".status");
+
+      if (reservation?.reserved) {
+        card.classList.add("reserved-overlay");
+        button.disabled = true;
+        button.textContent = "Подарок уже куплен";
+        status.className = "status chosen";
+        status.textContent = "✓ Этот подарок уже куплен. Пожалуйста, выберите другой.";
+      } else {
+        card.classList.remove("reserved-overlay");
+        button.disabled = false;
+        button.textContent = "Я купил(а) этот подарок";
+        status.className = "status";
+        status.textContent = "После покупки обязательно отметьте подарок здесь.";
+      }
+    }
+
+    function setStatus(card, message, type = "") {
+      const status = card.querySelector(".status");
+      status.className = `status ${type}`.trim();
+      status.textContent = message;
+    }
+
+    function showGlobalSetupWarning(message) {
+      const notice = document.querySelector(".notice");
+      notice.textContent = message;
+    }
+  </script>
+</body>
+</html>
