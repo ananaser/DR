@@ -260,7 +260,7 @@
     }
 
     .reserved-overlay::before {
-      content: "КУПЛЕНО";
+      content: "УЖЕ ВЫБРАН";
       position: absolute;
       z-index: 3;
       top: 18px;
@@ -283,6 +283,92 @@
       pointer-events: none;
       background: #74706d;
     }
+
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(24, 21, 19, .58);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .confirm-modal {
+      width: min(480px, 100%);
+      padding: 26px;
+      border-radius: 24px;
+      background: white;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .28);
+    }
+
+    .confirm-modal h3 {
+      margin: 0 0 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .confirm-modal p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .confirm-check {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #faf8f6;
+      cursor: pointer;
+    }
+
+    .confirm-check input {
+      width: 19px;
+      height: 19px;
+      margin-top: 1px;
+      accent-color: var(--success);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      min-height: 48px;
+      border: 0;
+      border-radius: 13px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .modal-cancel {
+      background: #eee9e5;
+      color: var(--text);
+    }
+
+    .modal-confirm {
+      background: var(--success);
+      color: white;
+    }
+
+    .modal-confirm:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+    }
+
+    body.modal-open { overflow: hidden; }
 
     footer {
       padding: 0 20px 50px;
@@ -320,10 +406,34 @@
       Нажмите на ссылку, чтобы посмотреть подарок. Если вы решили его купить,
       обязательно отметьте подарок как купленный — так другие гости не выберут его повторно.
     </p>
-    <div class="notice">Важно: после покупки обязательно нажмите «Я купил(а) этот подарок»</div>
+    <div class="notice">Важно: после покупки обязательно нажмите «Я покупаю этот подарок»</div>
   </header>
 
   <main class="grid" id="giftGrid"></main>
+
+
+  <div class="modal-backdrop" id="purchaseModal" role="dialog" aria-modal="true" aria-labelledby="purchaseModalTitle">
+    <div class="confirm-modal">
+      <h3 id="purchaseModalTitle">Подтвердить выбор</h3>
+      <p id="purchaseModalText">
+        После подтверждения подарок будет отмечен как выбранный и станет недоступен другим гостям.
+      </p>
+
+      <label class="confirm-check">
+        <input type="checkbox" id="purchaseConfirmCheck">
+        <span>
+          Я действительно решил(а) купить этот подарок и понимаю, что отменить отметку на сайте самостоятельно нельзя.
+        </span>
+      </label>
+
+      <div class="modal-actions">
+        <button class="modal-cancel" id="purchaseCancel" type="button">Отмена</button>
+        <button class="modal-confirm" id="purchaseConfirm" type="button" disabled>
+          Подтвердить
+        </button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     Сделано с любовью к 35-летию Леры
@@ -339,15 +449,24 @@
     */
 
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.firebasestorage.app",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyBoHFax1nLgsjF9T8AJ7yYxx8cBWX_7NFA",
+      authDomain: "lera-93d8e.firebaseapp.com",
+      projectId: "lera-93d8e",
+      storageBucket: "lera-93d8e.firebasestorage.app",
+      messagingSenderId: "74776262859",
+      appId: "1:74776262859:web:c39a1d9f0388ed85fac34e"
     };
 
     const gifts = [
+      {
+        id: "ugg-tazz-ii",
+        image: "ugg.svg",
+        title: "UGG Tazz II — Sand",
+        description:
+          "Женские UGG Tazz II из мягкой замши с овечьей подкладкой и лёгкой платформой.",
+        meta: "UGG Australia · A$199.99 · цвет Sand · размер 26 см",
+        url: "https://au.ugg.com/products/w-tazz-ii-1174471-san-san?sizeSystem=cm&size=26"
+      },
       {
         id: "yacht-dinner",
         image: "yacht.svg",
@@ -414,11 +533,11 @@
 
             <div class="reservation">
               <div class="reservation-label">
-                Уже купили или точно решили купить этот подарок?
+                Решили купить этот подарок?
               </div>
 
               <button class="reserve-button" type="button">
-                Я купил(а) этот подарок
+                Я покупаю этот подарок
               </button>
 
               <div class="status" aria-live="polite"></div>
@@ -464,39 +583,83 @@
       loadLocalReservations();
     }
 
+    const purchaseModal = document.getElementById("purchaseModal");
+    const purchaseModalText = document.getElementById("purchaseModalText");
+    const purchaseConfirmCheck = document.getElementById("purchaseConfirmCheck");
+    const purchaseConfirm = document.getElementById("purchaseConfirm");
+    const purchaseCancel = document.getElementById("purchaseCancel");
+
+    let pendingGiftId = null;
+    let pendingCard = null;
+
     document.querySelectorAll(".gift-card").forEach((card) => {
       const giftId = card.dataset.giftId;
       const button = card.querySelector(".reserve-button");
 
-      button.addEventListener("click", async () => {
-        const confirmed = window.confirm(
-          "Подтвердите: вы уже купили или точно решили купить этот подарок. После подтверждения он будет отмечен как купленный для остальных гостей."
-        );
+      button.addEventListener("click", () => {
+        const gift = gifts.find((item) => item.id === giftId);
+        pendingGiftId = giftId;
+        pendingCard = card;
 
-        if (!confirmed) return;
+        purchaseModalText.textContent =
+          `Вы выбираете «${gift.title}». После подтверждения остальные гости увидят, что подарок уже выбран.`;
 
-        button.disabled = true;
-        button.textContent = "Сохраняю…";
-
-        try {
-          if (firebaseIsConfigured && db && firestoreApi) {
-            await reserveGiftInFirebase(giftId);
-          } else {
-            reserveGiftLocally(giftId);
-          }
-        } catch (error) {
-          console.error(error);
-          setStatus(
-            card,
-            "Не получилось сохранить. Возможно, подарок уже отметил другой гость.",
-            "error"
-          );
-        } finally {
-          button.disabled = false;
-          button.textContent = "Я купил(а) этот подарок";
-        }
+        purchaseConfirmCheck.checked = false;
+        purchaseConfirm.disabled = true;
+        purchaseModal.classList.add("open");
+        document.body.classList.add("modal-open");
       });
     });
+
+    purchaseConfirmCheck.addEventListener("change", () => {
+      purchaseConfirm.disabled = !purchaseConfirmCheck.checked;
+    });
+
+    purchaseCancel.addEventListener("click", closePurchaseModal);
+
+    purchaseModal.addEventListener("click", (event) => {
+      if (event.target === purchaseModal) closePurchaseModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && purchaseModal.classList.contains("open")) {
+        closePurchaseModal();
+      }
+    });
+
+    purchaseConfirm.addEventListener("click", async () => {
+      if (!pendingGiftId || !pendingCard || !purchaseConfirmCheck.checked) return;
+
+      purchaseConfirm.disabled = true;
+      purchaseConfirm.textContent = "Сохраняю…";
+
+      try {
+        if (firebaseIsConfigured && db && firestoreApi) {
+          await reserveGiftInFirebase(pendingGiftId);
+        } else {
+          reserveGiftLocally(pendingGiftId);
+        }
+        closePurchaseModal();
+      } catch (error) {
+        console.error(error);
+        setStatus(
+          pendingCard,
+          "Не получилось сохранить. Возможно, подарок уже выбрал другой гость.",
+          "error"
+        );
+        closePurchaseModal();
+      }
+    });
+
+    function closePurchaseModal() {
+      purchaseModal.classList.remove("open");
+      document.body.classList.remove("modal-open");
+      purchaseConfirmCheck.checked = false;
+      purchaseConfirm.disabled = true;
+      purchaseConfirm.textContent = "Подтвердить";
+      pendingGiftId = null;
+      pendingCard = null;
+    }
 
     async function reserveGiftInFirebase(giftId) {
       const {
@@ -516,6 +679,7 @@
 
         transaction.set(giftRef, {
           reserved: true,
+          status: "selected",
           reservedAt: serverTimestamp()
         });
       });
@@ -556,7 +720,8 @@
       }
 
       reservations[giftId] = {
-        reserved: true
+        reserved: true,
+        status: "selected"
       };
 
       localStorage.setItem(
@@ -587,15 +752,15 @@
       if (reservation?.reserved) {
         card.classList.add("reserved-overlay");
         button.disabled = true;
-        button.textContent = "Подарок уже куплен";
+        button.textContent = "Подарок уже выбран";
         status.className = "status chosen";
-        status.textContent = "✓ Этот подарок уже куплен. Пожалуйста, выберите другой.";
+        status.textContent = "✓ Этот подарок уже выбрал другой гость. Пожалуйста, выберите другой.";
       } else {
         card.classList.remove("reserved-overlay");
         button.disabled = false;
-        button.textContent = "Я купил(а) этот подарок";
+        button.textContent = "Я покупаю этот подарок";
         status.className = "status";
-        status.textContent = "После покупки обязательно отметьте подарок здесь.";
+        status.textContent = "Свободен. После решения о покупке обязательно отметьте подарок здесь.";
       }
     }
 
