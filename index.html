@@ -78,12 +78,86 @@
       gap: 9px;
       align-items: center;
       margin-top: 24px;
-      padding: 10px 15px;
-      border: 1px solid var(--border);
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 18px;
+      background: rgba(255,255,255,.82);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.45;
+      box-shadow: 0 12px 35px rgba(63,45,35,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .notice strong {
+      font-weight: 900;
+    }
+
+
+
+    .progress-card {
+      width: min(860px, calc(100% - 32px));
+      margin: 0 auto 34px;
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 12px 35px rgba(63,45,35,.08);
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 11px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 12px;
+      overflow: hidden;
       border-radius: 999px;
-      background: rgba(255,255,255,.72);
-      color: #5f5954;
-      font-size: 14px;
+      background: #e9e3de;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      transition: width .35s ease;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 14px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .status-badge.available {
+      background: #eaf7ef;
+      color: var(--success);
+    }
+
+    .status-badge.selected {
+      background: #efe7e2;
+      color: #7b4c3e;
+    }
+
+    .gift-image {
+      background: #eee;
+    }
+
+    .gift-image[src*="airbnb"] {
+      object-fit: contain;
+      padding: 18px;
+      background: #fff;
     }
 
     .grid {
@@ -382,7 +456,74 @@
         padding-top: 48px;
       }
 
-      .grid {
+  
+
+    .progress-card {
+      width: min(860px, calc(100% - 32px));
+      margin: 0 auto 34px;
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 12px 35px rgba(63,45,35,.08);
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 11px;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e9e3de;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      transition: width .35s ease;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 14px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .status-badge.available {
+      background: #eaf7ef;
+      color: var(--success);
+    }
+
+    .status-badge.selected {
+      background: #efe7e2;
+      color: #7b4c3e;
+    }
+
+    .gift-image {
+      background: #eee;
+    }
+
+    .gift-image[src*="airbnb"] {
+      object-fit: contain;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .grid {
         grid-template-columns: 1fr;
       }
 
@@ -400,14 +541,28 @@
 <body>
   <header class="hero">
     <p class="eyebrow">Birthday wishlist</p>
-    <h1>Лере 35</h1>
+    <h1>🎉 Лере исполняется 35!</h1>
     <p class="intro">
-      Здесь собраны подарки, которые порадуют Леру.
-      Нажмите на ссылку, чтобы посмотреть подарок. Если вы решили его купить,
-      обязательно отметьте подарок как купленный — так другие гости не выберут его повторно.
+      Спасибо, что хотите её порадовать. Выберите подарок из списка ниже.
+      Когда решите его купить, обязательно отметьте выбор на сайте —
+      так никто другой не купит такой же подарок.
     </p>
-    <div class="notice">Важно: после покупки обязательно нажмите «Я покупаю этот подарок»</div>
+    <div class="notice">
+      <strong>Важно: после покупки обязательно нажмите «Я покупаю этот подарок»</strong>
+    </div>
   </header>
+
+
+
+  <section class="progress-card" aria-label="Прогресс выбранных подарков">
+    <div class="progress-head">
+      <span>Выбрано подарков</span>
+      <span id="progressText">0 из 5</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </section>
 
   <main class="grid" id="giftGrid"></main>
 
@@ -460,7 +615,7 @@
     const gifts = [
       {
         id: "ugg-tazz-ii",
-        image: "ugg.svg",
+        image: "images/ugg.webp",
         title: "UGG Tazz II — Sand",
         description:
           "Женские UGG Tazz II из мягкой замши с овечьей подкладкой и лёгкой платформой.",
@@ -469,7 +624,7 @@
       },
       {
         id: "yacht-dinner",
-        image: "yacht.svg",
+        image: "images/yacht.webp",
         title: "Круиз на яхте и ужин для двоих",
         description:
           "Красивый вечер на воде: прогулка на яхте и ужин из двух блюд для двоих.",
@@ -478,7 +633,7 @@
       },
       {
         id: "healing-lounge",
-        image: "spa.svg",
+        image: "images/spa.webp",
         title: "Подарочная карта The Healing Lounge",
         description:
           "Подарочная карта на массаж, спа-процедуры и другие услуги The Healing Lounge.",
@@ -487,7 +642,7 @@
       },
       {
         id: "airbnb-card",
-        image: "airbnb.svg",
+        image: "images/airbnb.webp",
         title: "Подарочная карта Airbnb",
         description:
           "Цифровая подарочная карта для будущего путешествия, проживания или впечатления.",
@@ -496,7 +651,7 @@
       },
       {
         id: "ray-ban",
-        image: "sunglasses.svg",
+        image: "images/rayban.webp",
         title: "Солнцезащитные очки Ray-Ban RB4472",
         description:
           "Модель Ray-Ban Khal Bio-Based в черепаховой оправе с зелёными линзами.",
@@ -506,6 +661,8 @@
     ];
 
     const grid = document.getElementById("giftGrid");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
 
     function escapeHtml(value) {
       return String(value)
@@ -519,10 +676,11 @@
     function renderCards() {
       grid.innerHTML = gifts.map((gift, index) => `
         <article class="gift-card" data-gift-id="${gift.id}">
-          <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.title)}">
+          <img class="gift-image" src="${gift.image}" alt="${escapeHtml(gift.title)}" loading="lazy" decoding="async">
 
           <div class="gift-content">
             <div class="gift-number">Подарок ${String(index + 1).padStart(2, "0")}</div>
+            <div class="status-badge available">● Свободен</div>
             <h2 class="gift-title">${escapeHtml(gift.title)}</h2>
             <p class="gift-description">${escapeHtml(gift.description)}</p>
             <div class="gift-meta">${escapeHtml(gift.meta)}</div>
@@ -548,6 +706,7 @@
     }
 
     renderCards();
+    updateProgress();
 
     const firebaseIsConfigured =
       !firebaseConfig.apiKey.startsWith("YOUR_") &&
@@ -748,20 +907,34 @@
 
       const button = card.querySelector(".reserve-button");
       const status = card.querySelector(".status");
+      const badge = card.querySelector(".status-badge");
 
       if (reservation?.reserved) {
         card.classList.add("reserved-overlay");
         button.disabled = true;
         button.textContent = "Подарок уже выбран";
+        badge.className = "status-badge selected";
+        badge.textContent = "🔒 Уже выбран";
         status.className = "status chosen";
         status.textContent = "✓ Этот подарок уже выбрал другой гость. Пожалуйста, выберите другой.";
       } else {
         card.classList.remove("reserved-overlay");
         button.disabled = false;
         button.textContent = "Я покупаю этот подарок";
+        badge.className = "status-badge available";
+        badge.textContent = "● Свободен";
         status.className = "status";
-        status.textContent = "Свободен. После решения о покупке обязательно отметьте подарок здесь.";
+        status.textContent = "После решения о покупке обязательно отметьте подарок здесь.";
       }
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const selected = document.querySelectorAll(".gift-card.reserved-overlay").length;
+      const total = gifts.length;
+      progressText.textContent = `${selected} из ${total}`;
+      progressFill.style.width = `${total ? (selected / total) * 100 : 0}%`;
     }
 
     function setStatus(card, message, type = "") {
